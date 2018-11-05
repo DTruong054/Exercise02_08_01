@@ -23,8 +23,32 @@
     //if came form submit
     if (isset($_POST['submit'])) {
         $formErrorCount = 0;
+        if (!empty($_POST['subName'])) {
+            $subscriberName = stripslashes($_POST['subName']);
+            $subscriberName = trim($subscriberName);
+            if (strlen($subscriberName) == 0) {
+                ++$formErrorCount;
+                echo "<p>You must include your <strong>Name</strong></p>\n";
+            }
+        } else{
+            ++$formErrorCount;
+            echo "<p>Form submit error, no <strong>Name</strong> field</p>\n";
+        }
+    if (!empty($_POST['subEmail'])) {
+            $subscriberEmail = stripslashes($_POST['subEmail']);
+            $subscriberEmail = trim($subscriberEmail);
+            if (strlen($subscriberEmail) == 0) {
+                ++$formErrorCount;
+                echo "<p>You must include your <strong>Email</strong></p>\n";
+            }
+        } else{
+            ++$formErrorCount;
+            echo "<p>Form submit error, no <strong>Email</strong> field</p>\n";
+        }
+        //Validation
+        if ($formErrorCount == 0) {
+            $showForm = false;
         $DBConnect = mysqli_connect($hostName, $username, $password);
-
         //If connected or not
         if (!$DBConnect) {
             //Connection has an error
@@ -33,21 +57,17 @@
             //Creating a database
             if (mysqli_select_db($DBConnect, $DBName)) {
                 echo "<p>Successfully selected \"$DBName\"" . "database.</p>\n";
-                $sql = "SHOW TABLES LIKE '$tableName'";
+                $subscriberDate = date("Y-m-d");
+                $sql = "INSERT INTO $tableName" .
+                        "(name, email, subscribeDate)" .
+                        "VALUES ('$subscriberName'," .
+                        "'$subscriberEmail', '$subscriberDate')";
                 $result = mysqli_query($DBConnect, $sql);
-                if (mysqli_num_rows($result) == 0) {
-                    //if table doesn't exist create new one
-                    echo "The <strong>$tableName</strong> table does not exist, creating table";
-                    $sql = "CREATE TABLE $tableName (subscribersID SMALLINT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(80), email VARCHAR(100), subscribeDate DATE, confirmedDate DATE)";
-                    $result = mysqli_query($DBConnect, $sql);
-                    if (!$result) {
-                        echo "<p>Unable to create the <strong>$tableName</strong> table.</p>\n";
-                        echo "<p>Error: " . mysqli_error($DBConnect) . "</p>\n";
-                    } else {
-                        echo "<p>Successfully created the <strong>$tableName</strong> table.</p>\n";
-                    }
+                if (!$result) {
+                    echo "<p>Unbale to insert the values into the <strong>$tableName</strong> table</p>\n";
+                    echo "<p>Error Code <strong>" . mysqli_errno($DBConnect) . ": " . mysqli_error($DBConnect) . "</strong></p>";
                 } else {
-                    echo "The <strong>$tableName</strong> table already exists";
+                    # code...
                 }
                 
             } else {
@@ -55,6 +75,10 @@
             }
             
         echo "<p>Closing Database connection: " . mysqli_close($DBConnect) . "</p>\n";
+        }
+        }
+        else{
+            $showForm = true;
         }
     } else {
         $showForm = true;

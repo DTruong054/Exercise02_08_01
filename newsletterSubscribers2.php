@@ -38,14 +38,12 @@
             echo "<th>Subscriber date</th>";
             echo "<th>Subscriber confirm</th>";
             echo "</tr>";
-            while ($row = mysqli_fetch_row($result)) {
+            while ($row = mysqli_fetch_assoc($result)) {
               echo "<tr>";
-              echo "<td>{$row[0]}</td>";
-              echo "<td>{$row[1]}</td>";
-              echo "<td>{$row[2]}</td>";
-              echo "<td>{$row[3]}</td>";
-              echo "<td>{$row[4]}</td>";
-              echo "</tr>";
+              foreach ($row as $field) {
+                  echo "<td>{$field}</td>";
+              }
+              echo "</tr>\n";
             }
             echo "</table>\n";
             mysqli_free_result($result);

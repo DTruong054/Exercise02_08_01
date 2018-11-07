@@ -13,7 +13,7 @@
     <?php
     $hostName = "localhost";
     $userName = "adminer";
-    $password = "judge-quick-25";
+    $password = "seven-which-26";
     $DBName = "guestbook";
     $tablename = "visitors";
     $firstName = "";
@@ -96,7 +96,7 @@
     }
     
     ?>
-    <form action="SignGuestBook.php" method="post">
+    <form action="signGuestBook.php" method="post">
         <p><strong>First Name: </strong><br>
         <input type="text" name="firstname" value="<?php echo $firstName; ?>"></p>
         <p><strong>Last Name: </strong><br>
